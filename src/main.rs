@@ -515,24 +515,6 @@ mod runtime {
         "j .", /* infinitive loop, waiting for eventual timeout watchdog */
     );
 
-    // FUNCTION: Crt0PreInit
-    // User hook before 'C' runtime initialization. Empty routine in case of crt0 startup code.
-    global_asm!(
-        ".weak Crt0PreInit",
-        ".type Crt0PreInit, %function",
-        "Crt0PreInit:",
-        "ret",
-    );
-
-    // FUNCTION: Crt0PostInit
-    // User hook after 'C' runtime initialization. Empty routine in case of crt0 startup code.
-    global_asm!(
-        ".weak Crt0PostInit",
-        ".type Crt0PostInit, %function",
-        "Crt0PostInit:",
-        "ret",
-    );
-
     // FUNCTION: Crt0BssInit
     // Default Crt0 BSS clear function. It goes through clear_table entries and calls the clear
     // operation for each of them
@@ -725,7 +707,8 @@ mod runtime {
         "   .endif",
         ".endm ",
         ".pushsection .text.default_int_handler, \"ax\",@progbits",
-        "interrupt_hnd 0, 15",
+        "interrupt_hnd 0, 1",
+        "interrupt_hnd 3, 15",
         "interrupt_hnd 16, 32",
         "   ret",
         ".popsection",
