@@ -100,6 +100,7 @@ It seems that the ".weak" directive is not working when building with
 `--release` flag.
 
 The three functions `__INTERRUPT_HANDLER_2` `Crt0PostInit` and `Crt0PreInit`
-are defined in the above code and I expect the *weak* versions of these
+are defined in the above code. I expect that the weak versions of these
 functions defined in the inline assembly should be ignored when a strong
 definition exists.
+
