@@ -4,7 +4,7 @@ enabled.
 Build in debug mode, everything works as expected:
 
 ```
-cargo +tricore b --target=tc162-htc-none --release
+cargo +tricore b --target=tc162-htc-none
 ```
 
 Build in release mode, the build fails.
