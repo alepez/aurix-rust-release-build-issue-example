@@ -104,3 +104,44 @@ are defined in the above code. I expect that the weak versions of these
 functions defined in the inline assembly should be ignored when a strong
 definition exists.
 
+## Solution
+
+The issue with the previous approach is that both implementation of `Crt0PreInit` are placed in `main.rs` (same applies to `Crt0PostInit` and `__INTERRUPT_HANDLER_2`):
+
+```rust
+#[export_name = "Crt0PreInit"]
+fn pre_init_fn() {
+    let cpu_core_id: u32;
+    unsafe {
+        core::arch::asm!("mfcr {0}, 0xFE1C", out(reg32) cpu_core_id);
+    }
+    if cpu_core_id == 0 {
+        disable_safety_watchdog();
+    }
+    disable_cpu_watchdog();
+}
+```
+
+```
+global_asm!(
+    ".weak Crt0PreInit",
+    ".type Crt0PreInit, %function",
+    "Crt0PreInit:",
+    "ret",
+);
+```
+
+During compilation this results in an asm file containing 2 different directives (`.weak` and `.global`) for the symbol `Crt0PreInit`:
+
+```
+.weak Crt0PreInit
+.global Crt0PreInit
+```
+
+Which leads to the following error:
+
+```
+error: Crt0PreInit changed binding to STB_GLOBAL
+```
+
+**An easy solution is to move the runtime (which contains the inline asm and `abort` functions) into a library and link it from there.**
