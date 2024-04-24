@@ -4,6 +4,10 @@ version = "0.1.0"
 edition = "2021"
 license = "BSL-1.0"
 
+[lib]
+name = "runtime"
+path = "src/lib.rs"
+
 [dependencies]
 defmt = "=0.3.6"
 defmt-rtt = "=0.4.0"
